@@ -104,7 +104,7 @@ int TabuTSP::calcSolutionCost(std::vector<int> solutionToCalc)
 	{
 		if (i == G->MatrixSize - 1)
 		{
-			cost += G->CityMatrix[solutionToCalc[i]][0];
+			cost += G->CityMatrix[solutionToCalc[i]][solutionToCalc[0]];
 		}
 		else
 		{
@@ -147,6 +147,24 @@ void TabuTSP::Resolve()
 			}
 		}
 
+		// int j = rand() % G->MatrixSize;
+		// int k = rand() % G->MatrixSize;
+		//
+		// if (j != k && tabuList[j][k] == 0) {
+		// 	swap(j, k);
+		// 	int currCost = calcSolutionCost(currSolution);
+		// 	//std::cout << currCost <<std::endl;
+		// 	if (currCost < bestSolutionValue /* && tabuList[j][k] == 0*/) {
+		// 		city1 = j;
+		// 		city2 = k;
+		// 		bestSolution = currSolution;
+		// 		bestSolutionValue = currCost;
+		// 		tmpMaxiterationFromBetterSolution = maxIterationFromBetterSolution;
+		// 		goto forbreak;
+		// 	}
+		// }
+
+
 		forbreak:
 
 		if (city1!= 0)
@@ -166,11 +184,11 @@ void TabuTSP::Resolve()
 TabuTSP::TabuTSP(Graph * _G)
 {
 	G = _G;
-	maxIteration = 2000;
-	maxIterationFromBetterSolution = maxIteration/4;
+	maxIteration = 1000*G->MatrixSize;
+	maxIterationFromBetterSolution = maxIteration/2;
 
 	bestSolutionValue = 0;
-	tabuLifeTime = 5;
+	tabuLifeTime = 100;
 
 	tabuList.resize(G->MatrixSize);
 	bestSolution.resize(G->MatrixSize);
