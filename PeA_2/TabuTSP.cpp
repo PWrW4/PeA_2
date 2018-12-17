@@ -167,7 +167,7 @@ TabuTSP::TabuTSP(Graph * _G)
 {
 	G = _G;
 	maxIteration = 2000;
-	maxIterationFromBetterSolution = 1000;
+	maxIterationFromBetterSolution = maxIteration/4;
 
 	bestSolutionValue = 0;
 	tabuLifeTime = 5;
