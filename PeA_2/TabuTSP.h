@@ -9,17 +9,28 @@ private:
 	int maxIteration;
 	int maxIterationFromBetterSolution;
 
-	std::vector<int> tabuList;
+	std::vector<std::vector<int>> tabuList;
+	int tabuLifeTime;
 
-	std::vector<int> solution;
+	void tabuSetCityMove(int c1, int c2);
+	void tabuDecrement();
+
+	std::vector<int> bestSolution;
+	int bestSolutionValue;
+
+	std::vector<int> currSolution;
+
+
 
 	void initTabu();
-
-	void resolveTabu();
 
 	void findInitialSolution();
 
 	void showSolution();
+
+	int calcSolutionCost(std::vector<int> solutionToCalc);
+
+	void swap(int i, int k);
 
 public:
 

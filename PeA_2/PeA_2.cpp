@@ -6,7 +6,7 @@ int main()
 	//new menu;
 
 		Graph * g = new Graph;
-		g->LoadGraph("tsp_10.txt");
+		g->LoadGraph("tsp_17.txt");
 		g->DrawMatrixSize();
 		g->DrawMatrix();
 	
