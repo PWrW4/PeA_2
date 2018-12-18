@@ -101,14 +101,14 @@ void SimAnnTSP::Resolve()
 			firstPermutation[firstCity] = secondPermutation[firstCity];
 			firstPermutation[secondCity] = secondPermutation[secondCity]; // przyjmujemy 2 permutacje jako kolejna wyjsciowa
 
-			std::cout << calcSolutionCost(firstPermutation) << std::endl;
+			// std::cout << calcSolutionCost(firstPermutation) << std::endl;
 		}
 		else
 		{
 			secondPermutation[firstCity] = firstPermutation[firstCity]; // lub wracamy do stanu poczatkowego
 			secondPermutation[secondCity] = firstPermutation[secondCity]; // brak lepszej sciezki 
 
-			std::cout << calcSolutionCost(secondPermutation) << std::endl;
+			// std::cout << calcSolutionCost(secondPermutation) << std::endl;
 		}
 		Temp *= TempConst; // mnozenie razy wyznaczona stala
 		
@@ -122,7 +122,7 @@ SimAnnTSP::SimAnnTSP(Graph * _g)
 	G = _g;
 
 	minT = 0.1;
-	TempConst = 0.9999;
+	TempConst = 0.999;
 	Solution = INT_MAX;
 
 	firstPermutation.resize(G->MatrixSize);

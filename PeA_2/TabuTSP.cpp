@@ -156,7 +156,7 @@ void TabuTSP::Resolve()
 		}
 
 		tabuDecrement(); // zmniejsza kadencje
-		std::cout << calcSolutionCost(bestSolution)<<std::endl;
+		// std::cout << calcSolutionCost(bestSolution)<<std::endl;
 		// std::cout << changePermutation << std::endl;
 		
 	}
