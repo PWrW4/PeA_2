@@ -7,30 +7,33 @@ private:
 	Graph * G;
 
 	int maxIteration;
-	int maxIterationFromBetterSolution;
+
+	int changePermutation;
+	int endThroughRefuse;
 
 	std::vector<std::vector<int>> tabuList;
-	int tabuLifeTime;
+	int tabuCadency;
 
 	void tabuSetCityMove(int c1, int c2);
 	void tabuDecrement();
 
 	std::vector<int> bestSolution;
-	int bestSolutionValue;
 
 	std::vector<int> currSolution;
+	std::vector<int> firstPermutation;
+	std::vector<int> secondPermutation;
 
 
 
 	void initTabu();
 
-	void findInitialSolution();
+	void generatePermutation(std::vector<int> & perm);
 
 	void showSolution();
 
 	int calcSolutionCost(std::vector<int> solutionToCalc);
 
-	void swap(int i, int k);
+	void swap(std::vector<int> & toSwap, int i, int k);
 
 public:
 

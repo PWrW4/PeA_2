@@ -1,12 +1,12 @@
-#include "TabuTSP.h"
+﻿#include "TabuTSP.h"
 #include <algorithm>
 #include <iostream>
 
 
 void TabuTSP::tabuSetCityMove(int c1, int c2)
 {
-	tabuList[c1][c2] += tabuLifeTime;
-	tabuList[c2][c1] += tabuLifeTime;
+	tabuList[c1][c2] += tabuCadency;
+	tabuList[c2][c1] += tabuCadency;
 }
 
 void TabuTSP::tabuDecrement()
@@ -25,9 +25,8 @@ void TabuTSP::tabuDecrement()
 
 void TabuTSP::initTabu()
 {
-	findInitialSolution();
-	bestSolutionValue = calcSolutionCost(bestSolution);
-	currSolution = bestSolution;
+	generatePermutation(firstPermutation); // wygenerowanie 1 rozwiązania
+	bestSolution = firstPermutation;
 
 	for (int i = 0; i < G->MatrixSize; ++i)
 	{
@@ -40,42 +39,15 @@ void TabuTSP::initTabu()
 
 
 
-void TabuTSP::findInitialSolution()
+void TabuTSP::generatePermutation(std::vector<int> & perm)
 {
-	std::vector<bool> cityVisited;
-	cityVisited.resize(G->MatrixSize);
-	for (bool city_visited : cityVisited)
+
+	for (int i = 0; i < G->MatrixSize; ++i)
 	{
-		city_visited = false;
+		perm[i] = i;
 	}
 
-
-	int currentVert = 0;
-	cityVisited[currentVert] = true;
-	for (int i = 0; i < G->MatrixSize; i++)
-	{
-		int bestVertCost = INT32_MAX;
-		int tmpBestVert = -1;
-		for (int j = 0; j < G->MatrixSize; j++)
-		{
-			if (!cityVisited[j])
-			{
-				if (bestVertCost > G->CityMatrix[currentVert][j])
-				{
-					tmpBestVert = j;
-					bestVertCost = G->CityMatrix[currentVert][j];
-				}
-			}
-		}
-		bestSolution[i] = currentVert;
-		currentVert = tmpBestVert;
-		if (tmpBestVert>-1)
-		{
-			cityVisited[currentVert] = true;			
-		}		
-	}
-
-	showSolution();
+	std::random_shuffle(perm.begin(), perm.end());
 }
 
 void TabuTSP::showSolution()
@@ -115,84 +87,95 @@ int TabuTSP::calcSolutionCost(std::vector<int> solutionToCalc)
 	return cost;
 }
 
-void TabuTSP::swap(int i, int k)
-{
-	int temp = currSolution[i];
-	currSolution[i] = currSolution[k];
-	currSolution[k] = temp;
-}
-
 void TabuTSP::Resolve()
 {
-	int tmpMaxiterationFromBetterSolution= maxIterationFromBetterSolution;
-	while(maxIteration>0 && tmpMaxiterationFromBetterSolution >0) {
-		int city1 = 0;
-		int city2 = 0;
+	int firstCity, secondCity, firstTabu, secondTabu;
+	int isEnd = 0; // zmienna sprawdzajaca czy zakonczyc 
 
-		for (int j = 0; j < currSolution.size(); j++) {
-			for (int k = 0; k < currSolution.size(); k++) {
-				if (j != k && tabuList[j][k] == 0) {
-					swap(j, k);
-					int currCost = calcSolutionCost(currSolution);
-					//std::cout << currCost <<std::endl;
-					if (currCost < bestSolutionValue /* && tabuList[j][k] == 0*/) {
-						city1 = j;
-						city2 = k;
-						bestSolution = currSolution;
-						bestSolutionValue = currCost;
-						tmpMaxiterationFromBetterSolution = maxIterationFromBetterSolution;
-						goto forbreak;
+	while (isEnd < maxIteration) // iteruje sie dopoki nie jest spelniony warunek zakonczenia(endCondition 60, 120...)
+	{
+		bool needToChange = false; // czy trzeba zmieniac permutacje
+		int mval = 0; // minimalna wartosc odleglosci
+		
+		secondPermutation = firstPermutation; // przypisanie do 2 permutacji
+
+		for (int i = 0; i < G->MatrixSize - 1; i++) //przeszukiwanie sasiedztwa
+		{
+			for (int j = i + 1; j < G->MatrixSize; j++) // sprawdzanie wszystkich mozliwosci zamiany
+			{
+				firstCity = i;
+				secondCity = j;
+				secondPermutation[firstCity] = firstPermutation[secondCity]; // zamienia miasta 
+				secondPermutation[secondCity] = firstPermutation[firstCity];
+				int sub = calcSolutionCost(firstPermutation) - calcSolutionCost(secondPermutation); // liczy sie roznice odleglosci
+				if (sub > mval) //jezeli znaleziono lepsze mval
+				{
+					if (tabuList[i][j] == 0 || calcSolutionCost(secondPermutation) < calcSolutionCost(bestSolution) * 0.95)
+						//sprawdzenie tabuList oraz kryterium aspiracji,
+					{
+						mval = sub;
+						for (int k = 0; k < G->MatrixSize; k++)
+							currSolution[k] = secondPermutation[k]; // przypisujemy 
+						firstTabu = firstCity; // wpisanie indeksow miast ktore zamieniamy, zeby dodac do tabu list
+						secondTabu = secondCity;
+						needToChange = true; // zmiana obecnego rozwiazania, bo znalezlismy lepsze 
 					}
 				}
+				secondPermutation[firstCity] = firstPermutation[firstCity]; // wracamy do poprzedniego stanu
+				secondPermutation[secondCity] = firstPermutation[secondCity];
 			}
 		}
 
-		// int j = rand() % G->MatrixSize;
-		// int k = rand() % G->MatrixSize;
-		//
-		// if (j != k && tabuList[j][k] == 0) {
-		// 	swap(j, k);
-		// 	int currCost = calcSolutionCost(currSolution);
-		// 	//std::cout << currCost <<std::endl;
-		// 	if (currCost < bestSolutionValue /* && tabuList[j][k] == 0*/) {
-		// 		city1 = j;
-		// 		city2 = k;
-		// 		bestSolution = currSolution;
-		// 		bestSolutionValue = currCost;
-		// 		tmpMaxiterationFromBetterSolution = maxIterationFromBetterSolution;
-		// 		goto forbreak;
-		// 	}
-		// }
-
-
-		forbreak:
-
-		if (city1!= 0)
+		if (needToChange == true)
+			// skoro znalezlismy najlepsze to teraz robimy dla niego, czyli przepisujemy do 1 permutacji curroSolutions(najlepsze rozwiazanie dla petli zamiany miast(sasiedztwa))
 		{
-			tabuDecrement();
-			tabuSetCityMove(city1, city2);
+
+			firstPermutation = currSolution; // przepisujemy
+			tabuSetCityMove(firstTabu, secondTabu);
+			isEnd++; // ziwksza sie bo wykonany ruch
+			this->changePermutation = 0;
+			// zerujemy bo ona oznacza czy musimy zmienic obecna permutacje, nie trzeba bo znalezlismy juz najlepsze 
 		}
-		maxIteration--;
-		tmpMaxiterationFromBetterSolution--;
+		else // jesli nie znalezlismy najlepszej permutacji to generujemy nowa bo tam wyzej nic nie polepszy�o		
+		{
+			this->generatePermutation(firstPermutation); //ewentualna zmiana permutacji
+			this->changePermutation++; // zwiekszamy licznik 
+			if (changePermutation > endThroughRefuse)
+				//zakonczenie w przypadku nie znalezienia lepszego, tyle razy zmienialismy permutacje a nie znajdujemy rozwiazania, to nie bedzie lepiej
+				// i tu badamy czy 10 razy byla zmiana i nie bylo porawy i od razu warunek koncowy i wychodzi
+				isEnd = maxIteration;
+		}
+
+		if (calcSolutionCost(firstPermutation) < calcSolutionCost(bestSolution))
+			//	bada czy obecna badana permutacja jest lepsza od obecnie najlepszej
+		{
+			bestSolution = firstPermutation; // no i jesli jest to nadpisujemy 
+		}
+
+		tabuDecrement(); // zmniejsza kadencje
+		std::cout << calcSolutionCost(bestSolution)<<std::endl;
+		
 	}
 
-	std::cout << maxIteration<<std::endl<< tmpMaxiterationFromBetterSolution <<std::endl;
-
+	
 	showSolution();
 }
 
 TabuTSP::TabuTSP(Graph * _G)
 {
 	G = _G;
-	maxIteration = 1000*G->MatrixSize;
-	maxIterationFromBetterSolution = maxIteration/2;
+	maxIteration = 10000;
 
-	bestSolutionValue = 0;
-	tabuLifeTime = 100;
+	tabuCadency = 2*G->MatrixSize;
+
+	changePermutation = 0;
+	endThroughRefuse = 0;
 
 	tabuList.resize(G->MatrixSize);
 	bestSolution.resize(G->MatrixSize);
 	currSolution.resize(G->MatrixSize);
+	firstPermutation.resize(G->MatrixSize);
+	secondPermutation.resize(G->MatrixSize);
 
 	tabuList.resize(G->MatrixSize);
 

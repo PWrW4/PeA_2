@@ -9,7 +9,7 @@ int main()
 	srand(time(NULL));
 
 	Graph* g = new Graph;
-	g->LoadGraph("tsp_17.txt");
+	g->LoadGraph("tsp_15.txt");
 	g->DrawMatrixSize();
 	g->DrawMatrix();
 

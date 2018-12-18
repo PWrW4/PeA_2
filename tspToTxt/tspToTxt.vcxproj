@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{1F1B9ABA-C3C3-41DB-91FF-9BEA1C91256B}</ProjectGuid>
-    <RootNamespace>PeA2</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{7C30412F-3C34-474B-AF89-05C11BCBB841}</ProjectGuid>
+    <RootNamespace>tspToTxt</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -115,17 +115,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Graph.h" />
-    <ClInclude Include="menu.h" />
-    <ClInclude Include="SimAnnTSP.h" />
-    <ClInclude Include="TabuTSP.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Graph.cpp" />
-    <ClCompile Include="menu.cpp" />
-    <ClCompile Include="PeA_2.cpp" />
-    <ClCompile Include="SimAnnTSP.cpp" />
-    <ClCompile Include="TabuTSP.cpp" />
+    <ClCompile Include="tsp_conv.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
