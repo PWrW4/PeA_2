@@ -33,8 +33,6 @@ private:
 
 	int calcSolutionCost(std::vector<int> solutionToCalc);
 
-	void swap(std::vector<int> & toSwap, int i, int k);
-
 public:
 
 	void Resolve();
