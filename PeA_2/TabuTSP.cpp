@@ -1,6 +1,7 @@
 ﻿#include "TabuTSP.h"
 #include <algorithm>
 #include <iostream>
+#include <valarray>
 
 
 void TabuTSP::tabuSetCityMove(int c1, int c2)
@@ -114,17 +115,19 @@ void TabuTSP::Resolve()
 						//sprawdzenie tabuList oraz kryterium aspiracji,
 					{
 						mval = sub;
-						for (int k = 0; k < G->MatrixSize; k++)
-							currSolution[k] = secondPermutation[k]; // przypisujemy 
+						currSolution= secondPermutation; // przypisujemy 
 						firstTabu = firstCity; // wpisanie indeksow miast ktore zamieniamy, zeby dodac do tabu list
 						secondTabu = secondCity;
-						needToChange = true; // zmiana obecnego rozwiazania, bo znalezlismy lepsze 
+						needToChange = true; // zmiana obecnego rozwiazania, bo znalezlismy lepsze
+						goto forbreak;
 					}
 				}
 				secondPermutation[firstCity] = firstPermutation[firstCity]; // wracamy do poprzedniego stanu
 				secondPermutation[secondCity] = firstPermutation[secondCity];
 			}
 		}
+
+		forbreak:
 
 		if (needToChange == true)
 			// skoro znalezlismy najlepsze to teraz robimy dla niego, czyli przepisujemy do 1 permutacji curroSolutions(najlepsze rozwiazanie dla petli zamiany miast(sasiedztwa))
@@ -133,13 +136,12 @@ void TabuTSP::Resolve()
 			firstPermutation = currSolution; // przepisujemy
 			tabuSetCityMove(firstTabu, secondTabu);
 			isEnd++; // ziwksza sie bo wykonany ruch
-			this->changePermutation = 0;
 			// zerujemy bo ona oznacza czy musimy zmienic obecna permutacje, nie trzeba bo znalezlismy juz najlepsze 
 		}
 		else // jesli nie znalezlismy najlepszej permutacji to generujemy nowa bo tam wyzej nic nie polepszy�o		
 		{
-			this->generatePermutation(firstPermutation); //ewentualna zmiana permutacji
-			this->changePermutation++; // zwiekszamy licznik 
+			generatePermutation(firstPermutation); //ewentualna zmiana permutacji
+			changePermutation++; // zwiekszamy licznik 
 			if (changePermutation > endThroughRefuse)
 				//zakonczenie w przypadku nie znalezienia lepszego, tyle razy zmienialismy permutacje a nie znajdujemy rozwiazania, to nie bedzie lepiej
 				// i tu badamy czy 10 razy byla zmiana i nie bylo porawy i od razu warunek koncowy i wychodzi
@@ -150,10 +152,12 @@ void TabuTSP::Resolve()
 			//	bada czy obecna badana permutacja jest lepsza od obecnie najlepszej
 		{
 			bestSolution = firstPermutation; // no i jesli jest to nadpisujemy 
+			changePermutation = 0;
 		}
 
 		tabuDecrement(); // zmniejsza kadencje
 		std::cout << calcSolutionCost(bestSolution)<<std::endl;
+		// std::cout << changePermutation << std::endl;
 		
 	}
 
@@ -164,12 +168,12 @@ void TabuTSP::Resolve()
 TabuTSP::TabuTSP(Graph * _G)
 {
 	G = _G;
-	maxIteration = 10000;
+	maxIteration = 100000;
 
 	tabuCadency = 2*G->MatrixSize;
 
 	changePermutation = 0;
-	endThroughRefuse = 0;
+	endThroughRefuse = 2;
 
 	tabuList.resize(G->MatrixSize);
 	bestSolution.resize(G->MatrixSize);

@@ -5,26 +5,26 @@
 
 int main()
 {
-	//new menu;
+	new menu;
 
 	srand(time(NULL));
 
-	Graph* g = new Graph;
-	g->LoadGraph("tsp_48.txt");
-	g->DrawMatrixSize();
-	g->DrawMatrix();
-
-
-	SimAnnTSP* SimAnn = new SimAnnTSP(g);
-	SimAnn->Resolve();
+	// Graph* g = new Graph;
+	// g->LoadGraph("tsp_48.txt");
+	// g->DrawMatrixSize();
+	// g->DrawMatrix();
+	//
+	//
+	// SimAnnTSP* SimAnn = new SimAnnTSP(g);
+	// SimAnn->Resolve();
 
 	// TabuTSP* Tabu = new TabuTSP(g);
 	// Tabu->Resolve();
 
-	//
+
+
 	int a;
 	std::cin >> a;
-	//
-	//	system("pause");
+
 	return 0;
 }

@@ -19,6 +19,7 @@ void menu::mainMenu()
 	{
 		std::cout << mainMenuStr << std::endl;
 		std::cin >> decision;
+		Time = 0;
 		switch (decision)
 		{
 		case 1:
@@ -33,18 +34,23 @@ void menu::mainMenu()
 		case 3:
 			delete Tabu;
 			Tabu = new TabuTSP(_graph);
+			StartCounter();
 			Tabu->Resolve();
+			Time += GetCounter();
+			std::cout << std::endl << "Time: " << Time << std::endl;
 			break;
-		// case 4:
-		// 	delete BB;
-		// 	BB = new BranchAndBound(_graph);
-		// 	BB->Resolve();
-		// 	BB->ShowRoute();
-		// 	break;
-		case 6:
+		case 4:
+			delete SimAnn;
+			SimAnn = new SimAnnTSP(_graph);
+			StartCounter();
+			SimAnn->Resolve();
+			Time += GetCounter();
+			std::cout << std::endl << "Time: " << Time << std::endl;
+			break;
+		case 5:
 			Time = 0;
 			srand(time(NULL));
-			std::cout << " 1. BruteForce \n 2. BranchAndBound \n 3. HeldKarp \n" << std::endl;
+			std::cout << "1. TS \n2. SA \n" << std::endl;
 			std::cin >> decision;
 			switch (decision)
 			{
@@ -59,16 +65,16 @@ void menu::mainMenu()
 				}
 
 				break;
-			// case 2:
-			// 	for (int i = 0; i < 10; i++)
-			// 	{
-			// 		delete BB;
-			// 		BB = new BranchAndBound(_graph);
-			// 		StartCounter();
-			// 		BB->Resolve();
-			// 		Time += GetCounter();
-			// 	}
-			// 	break;
+			case 2:
+				for (int i = 0; i < 10; i++)
+				{
+					delete SimAnn;
+					SimAnn = new SimAnnTSP(_graph);
+					StartCounter();
+					SimAnn->Resolve();
+					Time += GetCounter();
+				}
+				break;
 			default:
 				std::cout << "zly wybor xD" << std::endl;
 				break;
@@ -112,7 +118,7 @@ menu::menu()
 
 	Tabu = new TabuTSP(_graph);
 
-	// BB = new BranchAndBound(_graph);
+	SimAnn = new SimAnnTSP(_graph);
 
 	mainMenu();
 }
