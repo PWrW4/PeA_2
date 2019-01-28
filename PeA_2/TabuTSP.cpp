@@ -168,7 +168,7 @@ void TabuTSP::Resolve()
 TabuTSP::TabuTSP(Graph * _G)
 {
 	G = _G;
-	maxIteration = 100000;
+	maxIteration = 100;
 
 	tabuCadency = 2*G->MatrixSize;
 
